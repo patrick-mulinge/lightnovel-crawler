@@ -372,7 +372,7 @@ class Sources:
             scraper=open_session(
                 source.url,
                 parser=parser,
-                rate_limit=constructor.request_rate_limit,
+                rate_limit=min(constructor.request_rate_limit or 1.0, 1.0),
                 timeout=timeout,
             ),
         )
@@ -407,7 +407,7 @@ class Sources:
             scraper=open_session(
                 origin,
                 parser=parser,
-                rate_limit=GenericCrawler.request_rate_limit,
+                rate_limit=min(GenericCrawler.request_rate_limit or 1.0, 1.0),
                 timeout=timeout,
             ),
         )
