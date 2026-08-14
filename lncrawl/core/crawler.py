@@ -17,6 +17,7 @@ from ..utils.text_tools import format_title, normalize
 from .models import Chapter, Novel, SearchResult, Volume
 from .tiers import LEGACY
 
+
 if TYPE_CHECKING:
     from requests import Response
     from scraper import Diagnosis, Scraper
@@ -66,18 +67,8 @@ class Crawler(ABC):
 
     @classmethod
     def max_workers(cls) -> int:
-        """Threads this crawler's task manager runs.
-
-        One more than the scraper's per-address gate admits, which is not arbitrary:
-        measured against a live source, throughput rises to gate+1 and is flat above
-        it. The extra thread parses and stores a finished chapter while the others
-        hold the permits, so the gate stays fed instead of idling through every parse.
-
-        Deliberately not derived from `request_rate_limit`, which is an interval and
-        says nothing about how many threads can be busy at once. Reading it as both is
-        what left ten sources single-threaded for declaring no rate limit.
-        """
-        return max(1, ctx.config.crawler.max_sessions_per_exit) + 1
+        """Hard limit for small-RAM deployments."""
+        return 1
 
     @classmethod
     def max_concurrency(cls) -> int:
